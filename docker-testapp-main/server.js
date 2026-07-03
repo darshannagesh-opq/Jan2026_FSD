@@ -5,12 +5,22 @@ const MongoClient = require("mongodb").MongoClient;
 const PORT = 5050;
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static("public"));
-// http://localhost:8081 -> admin, pass
-// Running on the HOST: localhost:27017 -> the Docker "mongo" container (root:qwert, authSource=admin).
-// If this app later runs as a container on the same docker network, override with:
-//   MONGO_URL=mongodb://root:qwert@mongo:27017/?authSource=admin
-const MONGO_URL = process.env.MONGO_URL || "mongodb://root:qwert@localhost:27017/?authSource=admin";
-const DB_NAME = "OPQ_docker_demo";
+// Build the connection string from env vars (pass secrets at runtime, never bake them in).
+//   MONGO_DB_USERNAME  - mongo user            (default: root)
+//   MONGO_DB_PWD       - mongo password        (default: qwert)  -> pass with: -e MONGO_DB_PWD=...
+//   MONGO_DB_HOST      - host: "localhost" on your machine, "mongo" inside the docker network
+//   MONGO_DB_PORT      - mongo port            (default: 27017)
+// A full MONGO_URL, if provided, overrides all of the above.
+const MONGO_DB_USERNAME = process.env.MONGO_DB_USERNAME || "root";
+const MONGO_DB_PWD = process.env.MONGO_DB_PWD || "qwert";
+const MONGO_DB_HOST = process.env.MONGO_DB_HOST || "localhost";
+const MONGO_DB_PORT = process.env.MONGO_DB_PORT || "27017";
+
+const MONGO_URL =
+    process.env.MONGO_URL ||
+    `mongodb://${MONGO_DB_USERNAME}:${MONGO_DB_PWD}@${MONGO_DB_HOST}:${MONGO_DB_PORT}/?authSource=admin`;
+
+const DB_NAME = process.env.MONGO_DB_NAME || "OPQ_docker_demo";
 
 const client = new MongoClient(MONGO_URL);
 let db;
