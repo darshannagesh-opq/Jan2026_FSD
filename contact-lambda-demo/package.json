@@ -1,0 +1,16 @@
+{
+  "name": "contact-lambda-demo",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "@aws-sdk/client-secrets-manager": "^3.1083.0",
+    "mysql2": "^3.22.6"
+  }
+}
